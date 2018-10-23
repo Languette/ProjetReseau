@@ -29,7 +29,8 @@ eth2:
     - enable_ipv4: false
     - ipv6proto: static
     - enable_ipv6: true
-    - ipv6_autoconf: yes
+    - ipv6_autoconf: no
+    - ipv6ipaddr: fc00:1234:2::36
     - ipv6netmask: 64
 
 ## Configuration de la route vers LAN2 via VM2
@@ -51,7 +52,3 @@ routes:
       - name: LAN4
         ipaddr: 172.16.2.176/28
         gateway: 172.16.2.151
-
-
-
-
