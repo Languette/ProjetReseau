@@ -34,13 +34,13 @@ routes:
     - name: eth1
     - routes:
       - name: LAN3
-        ipaddr: 172.16.2.128/28
+        ipaddr: 172.16.2.144/28
         gateway: 172.16.2.131
     - name: eth2
     - routes:
       - name: LAN4
         ipaddr: 172.16.2.176/28
-        gateway: 172.16.2.183
+        gateway: 172.16.2.163
 
 ## But enable ipv4 forwarding
 net.ipv4.ip_forward:
