@@ -44,15 +44,14 @@ int tun_alloc(char *dev)
 }
 
 void tun_copy(int src, int dst){
-  char buf[5] ="hello" ;
+  char buf[STR_SIZE];
   int r;
-  int w;
   printf("Debut\n");
   //fcntl(dst, F_SETFL, O_NONBLOCK);
   while(1){
-   r = read(src, buf, 5);
-   write(dst, buf, 5);
-   write(dst, "\n", 2);
+   r = read(src, buf, STR_SIZE);
+   write(dst, buf, STR_SIZE);
+   //write(dst, "\n", 2);
    //write(dst, w, 5);
   }
   printf("\nFin");
