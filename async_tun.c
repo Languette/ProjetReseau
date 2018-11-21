@@ -18,8 +18,6 @@
 #include <linux/if_tun.h>
 #include <errno.h>
 
-/* taille maximale des lignes */
-#define MAXLIGNE 60
 #define MAX_BUFF 1500
 #define CIAO "Au revoir ...\n"
 
@@ -221,51 +219,55 @@ void echo(int f, char* hote, char* port)
   
   int pid = getpid(); /* pid du processus */
   int compteur=0;
-  char tampon[MAXLIGNE + 3]; /* tampons pour les communications */
+  char buf_out[MAX_BUFF];
   int fini=0;
   
   int envoi1 = 0;
   int code_read = 0;
-  char buf[MAX_BUFF];
+  char buf_in[MAX_BUFF];
   fcntl(f, F_SETFL, 0 | O_NONBLOCK);
   fcntl(tunfd, F_SETFL, 0 | O_NONBLOCK);
+  
   do { /* Faire echo et logguer */
   
 	if ( fini == 1 )
       break;  /* on sort de la boucle infinie*/
   
-    lu = recv(f,tampon,MAX_BUFF,0);
+    lu = recv(f,buf_out,MAX_BUFF,0);
     if (lu > 0 )
       {  
 		char msg_recv[lu +1];
+		strcpy(msg_recv, "");
 		char partial_msg[1];
-		//strcpy(msg_recv, tampon);
+		
         compteur++;
 		int i;
 		for(i = 0; i<lu; i++){
-			sprintf(partial_msg, "%c", tampon[i]);
+			sprintf(partial_msg, "%c", buf_out[i]);
 			strcat(msg_recv, partial_msg);
+			fprintf(stderr, "Taille apres iteration : %d caractere : %c\n", strlen(msg_recv), buf_out[i]);
 		}
 		msg_recv[lu]= '\0';
-		fprintf(stderr,"Taille de message recu : %d\nMessage : \n %s \n",lu, msg_recv);
+		fprintf(stderr,"Taille de message recu : %d . Taille effective : %d .\nMessage : \n %s \n",lu, strlen(msg_recv), msg_recv);
         /* log */
         
-        write(tunfd, msg_recv, strlen(msg_recv));
+        write(tunfd, msg_recv, lu);
       } else {
         //Noting is received OR there is an error
       }
 
-    code_read = read(tunfd, buf, MAX_BUFF);
+    code_read = read(tunfd, buf_in, MAX_BUFF);
     if ( code_read == -1 ){
       //Noting is sent OR there is an error
     }else{   /* envoi des données */
-      envoi1 = send(s_in,buf,code_read,0);
+      envoi1 = send(s_in,buf_in,code_read,0);
 	  
 	  fprintf(stderr, "Taille du message : %d . Envoye : %d !\n", code_read, envoi1);
 	  if(errno !=0){
 		fprintf(stderr, "Erreur : %s ! \n", strerror(errno));
 	  }
     }
+	
   } while ( 1 );
   /* le correspondant a quitté */
   close(f);
