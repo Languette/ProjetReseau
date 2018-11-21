@@ -22,8 +22,7 @@
 #define MAXLIGNE 64
 #define STR_SIZE 1024
 
-int tun_alloc(char *dev)
-{
+int tun_alloc(char *dev){
   struct ifreq ifr;
   int fd, err;
 
@@ -45,6 +44,7 @@ int tun_alloc(char *dev)
 
   if( (err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0 ){
     close(fd);
+	fprintf(stderr, "\n\nerreur tunalloc\n\n\n");
     return err;
   }
   strcpy(dev, ifr.ifr_name);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
   /* Traitement des arguments */
   if (argc!=4) {/* erreur de syntaxe */
-    printf("Usage: %s hote port interface_virtuelle\n",argv[0]);
+    printf("Usage: %s hote port nom_d'interface\n",argv[0]);
     exit(1);
   }
   char commands[40];
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
   sprintf(commands, "ip link set dev %s up", argv[3]);
   system(commands);
-  printf("Interface %s Configurée:\n",argv[3]);
+  printf("Interface %s Configurée:\n", argv[3]);
   printf("Appuyez sur une touche pour terminer\n");
   getchar();
 
@@ -110,35 +110,37 @@ int main(int argc, char *argv[])
     exit(4);
   }
   freeaddrinfo(resol); /* /!\ Libération mémoire */
-  fprintf(stderr,"Connexion reussie");
+  fprintf(stderr,"Connexion reussie\n\n");
   /* Session */
   char tampon[MAXLIGNE + 3]; /* tampons pour les communications */
-  ssize_t lu;
+
   int fini=0;
-  char* tampon2 = "Bise !";
+  
   int envoi1 = 0;
   int code_read = 0;
+  char buf[STR_SIZE];
+  
   while( 1 ) { 
 
     if ( fini == 1 )
       break;  /* on sort de la boucle infinie*/
 
-   code_read = read(tunfd, tampon,MAXLIGNE - 2);
+   code_read = read(tunfd, buf, STR_SIZE);
     if ( code_read == -1 ){
-      fini=1;
+	  fini=1;
       fprintf(stderr,"Connexion terminée !!\n");
       fprintf(stderr,"Hôte distant informé...\n");
-      shutdown(s, SHUT_WR); /* terminaison explicite de la socket 
-			     dans le sens client -> serveur */
-      /* On ne sort pas de la boucle tout de suite ... */
+      shutdown(s, SHUT_WR);
     }else{   /* envoi des données */
-      envoi1 = send(s,tampon,strlen(tampon),0);
-		fprintf(stderr, "Code de lecture : %d . Taille du message : %d . Envoye : %d ! \n Message : %s \n\n", code_read, strlen(tampon), envoi1, tampon);
+      envoi1 = send(s,buf,code_read,0);
+	  
+	fprintf(stderr, "Taille du message : %d . Envoye : %d !\n", code_read, envoi1);
 	  if(errno !=0){
 		fprintf(stderr, "Erreur : %s ! \n", strerror(errno));
 	  }
     }
   } 
+  
   /* Destruction de la socket */
   close(s);
 

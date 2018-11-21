@@ -2,6 +2,7 @@
 # RAPPEL: eth0 est à vagrant, ne pas y toucher
 
 ## Désactivation de network-manager
+
 NetworkManager:
   service:
     - dead
@@ -34,12 +35,9 @@ routes:
   network.routes:
     - name: eth1
     - routes:
-      - name: LAN2
-        ipaddr: 172.16.2.160/28
-        gateway: 172.16.2.132
       - name: LAN4
         ipaddr: 172.16.2.176/28
-        gateway: 172.16.2.132
+        gateway: 172.16.2.156
 
 
 

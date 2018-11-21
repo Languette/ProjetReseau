@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 ### Dossiers partagés
   config.vm.synced_folder ".", "/vagrant", owner: "m1reseaux"
-  config.vm.synced_folder "../partage", "/mnt/partage", create: true, owner: "m1reseaux" 
+  config.vm.synced_folder "C:\\Users\\Touda\\Documents\\reseaux\\PROJET\\partage", "/mnt/partage", create: true, owner: "m1reseaux" 
 
 
   config.vm.provider "virtualbox" do |vb|

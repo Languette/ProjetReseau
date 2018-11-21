@@ -1,7 +1,8 @@
-# Configuration eth1
+﻿# Configuration eth1
 # RAPPEL: eth0 est à vagrant, ne pas y toucher
-
+#fc00:1234:2::36
 ## Désactivation de network-manager
+
 NetworkManager:
   service:
     - dead
@@ -12,14 +13,14 @@ ip route del default:
   cmd:
     - run
 
-##Configuration de VM1
+##Configuration de VM1-6
 eth1:
   network.managed:
     - enabled: True
     - type: eth
     - proto: none
     - ipaddr: 172.16.2.156
-    - netmask: 28
+    - netmask: 28 
 
 eth2:
   network.managed:
@@ -33,22 +34,16 @@ eth2:
     - ipv6ipaddr: fc00:1234:1::16
     - ipv6netmask: 64
 
-## Configuration de la route vers LAN2 via VM2
 routes:
   network.routes:
-    - name: eth2
-    - routes:
-      - name: LAN2-6
-        ipaddr: fc00:1234:2::/64
-        gateway: fc00:1234:1::26
     - name: eth1
     - routes:
-      - name: LAN1
-        ipaddr: 172.16.2.128/28
-        gateway: 172.16.2.151
-      - name: LAN2
-        ipaddr: 172.16.2.160/28
-        gateway: 172.16.2.151
       - name: LAN4
         ipaddr: 172.16.2.176/28
-        gateway: 172.16.2.151
+        gateway: 172.16.2.1
+
+## enable ipv4 forwarding
+net.ipv4.ip_forward:
+  sysctl:
+    - present
+    - value: 1

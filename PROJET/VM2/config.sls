@@ -2,6 +2,7 @@
 # RAPPEL: eth0 est à vagrant, ne pas y toucher
 
 ## Désactivation de network-manager
+
 NetworkManager:
   service:
     - dead

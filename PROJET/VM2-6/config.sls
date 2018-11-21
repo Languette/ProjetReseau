@@ -12,7 +12,7 @@ ip route del default:
   cmd:
     - run
 
-## Configuration de VM2
+## Configuration de VM2-6
 eth1:
   network.managed:
     - enabled: True
